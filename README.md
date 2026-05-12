@@ -63,78 +63,90 @@ This edition is positioned as the more advanced and polished product showcase.
 ```text
 Surfin-bird-quest-premium/
 ├── index.html
-└── enhanced-pro.html
-🛠️ Built With
-HTML
-CSS
-Vanilla JavaScript
-Interaction-first UI patterns
-Product logic inspired by dashboard and ops systems
-🌍 Why This Project Matters
+├── enhanced-pro.html
+└── README.md
+```
+
+## 🛠️ Built With
+
+- HTML
+- CSS
+- Vanilla JavaScript
+- Interaction-first UI patterns
+- Product logic inspired by dashboard and ops systems
+
+## 🌍 Why This Project Matters
 
 This project showcases a front-end approach that goes beyond visual styling.
 
 It demonstrates how a simple layout prompt can evolve into:
 
-a gamified interface
-a systems-thinking exercise
-a portfolio piece with product logic
-a more memorable user journey
+- a gamified interface
+- a systems-thinking exercise
+- a portfolio piece with product logic
+- a more memorable user journey
 
 It is especially relevant for portfolios focused on:
 
-front-end development
-UI/UX thinking
-dashboard logic
-gamification
-interactive prototypes
-creative CodePen-style challenges
-🎯 What It Explores
-turning static layouts into living systems
-blending menu browsing with gameplay mechanics
-introducing operational tension through queues and urgency
-adding progression loops to increase engagement
-presenting front-end work as an experience, not just a page
-📸 Versions
-Main Version
+- front-end development
+- UI/UX thinking
+- dashboard logic
+- gamification
+- interactive prototypes
+- creative CodePen-style challenges
+
+## 🎯 What It Explores
+
+- turning static layouts into living systems
+- blending menu browsing with gameplay mechanics
+- introducing operational tension through queues and urgency
+- adding progression loops to increase engagement
+- presenting front-end work as an experience, not just a page
+
+## 📸 Versions
+
+### Main Version
 
 The original playable premium menu experience focused on combo building, missions, queue clearing, and rush flow.
 
-Enhanced Pro
+### Enhanced Pro
 
 A more strategic premium ops edition with stronger scoring, analytics framing, and a more flagship-style presentation.
 
-▶️ How to Use
-Open index.html for the main experience.
-Open enhanced-pro.html for the advanced version.
-Interact with the menu, build trays, complete missions, and manage the queue.
-💡 Ideal For
+## ▶️ How to Use
+
+1. Open `index.html` for the main experience.
+2. Open `enhanced-pro.html` for the advanced version.
+3. Interact with the menu, build trays, complete missions, and manage the queue.
+
+## 💡 Ideal For
 
 This project is a strong fit for:
 
-creative front-end portfolios
-GitHub Pages showcases
-CodePen challenge evolutions
-gamified UX case studies
-hospitality-themed interface experiments
-product-thinking demos
-👩‍💻 Author
+- creative front-end portfolios
+- GitHub Pages showcases
+- CodePen challenge evolutions
+- gamified UX case studies
+- hospitality-themed interface experiments
+- product-thinking demos
 
-Laura Andreea
-Front-end CRM & Dashboard Developer
+## 👩‍💻 Author
+
+**Laura Andreea**  
+Front-end CRM & Dashboard Developer  
 Focused on UI systems, product logic, gamified interfaces, and polished interactive experiences.
 
-📌 Notes
+## 📌 Notes
 
 This repository currently contains the full experience in standalone HTML files, making it easy to preview, deploy, and extend without extra setup.
 
 Future improvements could include:
 
-persistent progress
-sound feedback
-leaderboard logic
-achievement system
-accessibility expansion
-mobile-first gameplay refinements
+- persistent progress
+- sound feedback
+- leaderboard logic
+- achievement system
+- accessibility expansion
+- mobile-first gameplay refinements
 
 If you like creative front-end builds that mix interface design, game mechanics, and product thinking, this project is a great example of that blend.
