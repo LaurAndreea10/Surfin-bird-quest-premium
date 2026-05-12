@@ -1,0 +1,89 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Surfin Bird Quest Premium preview banner</title>
+  <desc id="desc">Premium gamified restaurant experience banner for Surfin Bird Quest Premium, featuring the main version and Enhanced Pro version.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#071226"/>
+      <stop offset="0.5" stop-color="#10243E"/>
+      <stop offset="1" stop-color="#1A4B5A"/>
+    </linearGradient>
+    <linearGradient id="card" x1="180" y1="120" x2="1120" y2="540" gradientUnits="userSpaceOnUse">
+      <stop stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="1" stop-color="rgba(255,255,255,0.08)"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="260" y1="220" x2="960" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD166"/>
+      <stop offset="0.5" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#4DD7C4"/>
+    </linearGradient>
+    <filter id="blurGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="24" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+
+  <circle cx="1090" cy="120" r="130" fill="#FFD166" opacity="0.14" filter="url(#blurGlow)"/>
+  <circle cx="210" cy="520" r="160" fill="#4DD7C4" opacity="0.12" filter="url(#blurGlow)"/>
+  <circle cx="860" cy="520" r="120" fill="#FF8A3D" opacity="0.12" filter="url(#blurGlow)"/>
+
+  <rect x="84" y="72" width="1112" height="496" rx="34" fill="url(#card)" stroke="rgba(255,255,255,0.16)"/>
+
+  <g opacity="0.95">
+    <rect x="132" y="116" width="176" height="38" rx="19" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.12)"/>
+    <text x="220" y="140" text-anchor="middle" fill="#EAF4FF" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" letter-spacing="1.4">GAMIFIED MENU</text>
+  </g>
+
+  <text x="132" y="228" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800">🐦 Surfin Bird Quest</text>
+  <text x="132" y="292" fill="url(#accent)" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800">Premium</text>
+
+  <text x="132" y="356" fill="#D9E7F7" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="500">
+    A premium restaurant menu reimagined as a playable arcade-style experience.
+  </text>
+
+  <g>
+    <rect x="132" y="408" width="222" height="72" rx="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.14)"/>
+    <text x="156" y="438" fill="#9ED8FF" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">MAIN VERSION</text>
+    <text x="156" y="466" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="800">Playable Core Flow</text>
+  </g>
+
+  <g>
+    <rect x="376" y="408" width="260" height="72" rx="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.14)"/>
+    <text x="400" y="438" fill="#FFD38B" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">ENHANCED PRO</text>
+    <text x="400" y="466" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="800">Flagship Ops Edition</text>
+  </g>
+
+  <g>
+    <rect x="826" y="152" width="290" height="318" rx="28" fill="rgba(8,16,30,0.46)" stroke="rgba(255,255,255,0.14)"/>
+    <text x="860" y="198" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800">Quest Tray</text>
+    <text x="860" y="230" fill="#C7D7E8" font-family="Arial, Helvetica, sans-serif" font-size="16">Combo • Queue • Rush • XP</text>
+
+    <rect x="860" y="260" width="222" height="16" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <rect x="860" y="260" width="154" height="16" rx="8" fill="url(#accent)"/>
+    <text x="860" y="300" fill="#F6FBFF" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Mission Progress 72%</text>
+
+    <g>
+      <rect x="860" y="332" width="102" height="78" rx="18" fill="rgba(255,255,255,0.07)"/>
+      <text x="911" y="366" text-anchor="middle" fill="#FFD166" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="800">+240</text>
+      <text x="911" y="390" text-anchor="middle" fill="#D6E5F3" font-family="Arial, Helvetica, sans-serif" font-size="14">XP</text>
+    </g>
+
+    <g>
+      <rect x="974" y="332" width="102" height="78" rx="18" fill="rgba(255,255,255,0.07)"/>
+      <text x="1025" y="366" text-anchor="middle" fill="#4DD7C4" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="800">4</text>
+      <text x="1025" y="390" text-anchor="middle" fill="#D6E5F3" font-family="Arial, Helvetica, sans-serif" font-size="14">Orders</text>
+    </g>
+
+    <rect x="860" y="432" width="136" height="34" rx="17" fill="#FF8A3D"/>
+    <text x="928" y="454" text-anchor="middle" fill="#08121E" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="800">Rush Active</text>
+  </g>
+
+  <text x="132" y="536" fill="#9FB6CC" font-family="Arial, Helvetica, sans-serif" font-size="18">
+    UI systems • product logic • gamification • GitHub Pages-ready
+  </text>
+</svg>
