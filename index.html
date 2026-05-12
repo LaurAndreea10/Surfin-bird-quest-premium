@@ -1,0 +1,2507 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surfin Bird Quest — Gamified Premium Menu</title>
+  <meta
+    name="description"
+    content="A premium gamified restaurant menu experience inspired by Laura Andreea's most appreciated CodePen challenge directions: editorial luxury, dashboard logic, combo quests, boss orders, and bilingual UX."
+  />
+  <style>
+    :root{
+      --bg:#f6efe5;
+      --bg-2:#ede2d0;
+      --paper:#fffaf3;
+      --paper-2:#fff6eb;
+      --card:#fffdf8;
+      --ink:#182430;
+      --ink-soft:#31485b;
+      --muted:#6a7780;
+      --line:rgba(24,36,48,.10);
+      --line-strong:rgba(24,36,48,.18);
+      --navy:#173246;
+      --navy-2:#224c65;
+      --gold:#c8a063;
+      --gold-2:#ecd8b3;
+      --sea:#0fa7a3;
+      --sea-2:#19c4bc;
+      --coral:#ff8251;
+      --warning:#d5912e;
+      --success:#1aa36e;
+      --danger:#d85d5d;
+      --violet:#8b5cf6;
+      --shadow:0 18px 50px rgba(20,31,44,.12);
+      --shadow-soft:0 10px 26px rgba(20,31,44,.08);
+      --radius-2xl:40px;
+      --radius-xl:30px;
+      --radius-lg:24px;
+      --radius-md:18px;
+      --radius-sm:14px;
+      --max:1400px;
+      --serif:"Georgia","Times New Roman",serif;
+      --sans:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --hero-overlay:linear-gradient(135deg, rgba(255,255,255,.72), rgba(255,250,243,.95));
+      --dark-panel:linear-gradient(180deg, rgba(18,43,58,.96), rgba(24,55,74,.96));
+      --accent-grad:linear-gradient(135deg, var(--gold), var(--coral));
+      --sea-grad:linear-gradient(135deg, var(--sea), var(--sea-2));
+      --navy-grad:linear-gradient(135deg, var(--navy), var(--navy-2));
+      --gold-grad:linear-gradient(135deg, var(--gold), #b98743);
+      --pill-bg:rgba(255,255,255,.72);
+      --soft-card:rgba(255,255,255,.72);
+      --recommended-bg:rgba(200,160,99,.10);
+      --recommended-line:rgba(200,160,99,.18);
+    }
+
+    .theme-night{
+      --bg:#0e1822;
+      --bg-2:#162534;
+      --paper:#13212d;
+      --paper-2:#182938;
+      --card:#172938;
+      --ink:#eef4f7;
+      --ink-soft:#d6e2e8;
+      --muted:#b8c9d3;
+      --line:rgba(255,255,255,.10);
+      --line-strong:rgba(255,255,255,.18);
+      --navy:#f3ece2;
+      --navy-2:#e4d4ba;
+      --gold:#dfb775;
+      --gold-2:#f2ddb8;
+      --sea:#79ddd9;
+      --sea-2:#98f0ea;
+      --coral:#ff9b74;
+      --warning:#e1ab55;
+      --success:#48c38f;
+      --danger:#ff8a8a;
+      --violet:#a78bfa;
+      --shadow:0 18px 50px rgba(0,0,0,.30);
+      --shadow-soft:0 10px 26px rgba(0,0,0,.18);
+      --hero-overlay:linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      --dark-panel:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      --pill-bg:rgba(255,255,255,.06);
+      --soft-card:rgba(255,255,255,.06);
+      --recommended-bg:rgba(223,183,117,.12);
+      --recommended-line:rgba(223,183,117,.20);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(200,160,99,.16), transparent 22%),
+        radial-gradient(circle at top right, rgba(15,167,163,.10), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(255,130,81,.10), transparent 22%),
+        linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 70%, var(--bg-2)) 52%, var(--bg-2) 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+      transition:background .25s ease, color .25s ease;
+    }
+
+    h1,h2,h3,h4,p,ul{margin:0}
+    img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+
+    .skip-link{
+      position:absolute;
+      left:16px;
+      top:-48px;
+      z-index:1000;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#111;
+      color:#fff;
+      transition:top .2s ease;
+    }
+    .skip-link:focus{top:16px}
+
+    .page{
+      width:min(calc(100% - 20px), var(--max));
+      margin:16px auto 44px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .group{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .glass-pill,
+    .ghost-btn,
+    .filter-btn,
+    .action-btn,
+    .tiny-btn,
+    .chip-btn{
+      transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease, opacity .18s ease;
+    }
+
+    .glass-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:var(--pill-bg);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      backdrop-filter:blur(10px);
+      color:var(--navy);
+      font-weight:800;
+      font-size:.9rem;
+    }
+
+    .brand-dot,
+    .mini-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      flex:0 0 auto;
+    }
+
+    .brand-dot{
+      background:var(--accent-grad);
+      box-shadow:0 0 0 6px color-mix(in srgb, var(--gold) 12%, transparent);
+    }
+
+    .mini-dot{
+      background:var(--sea-grad);
+    }
+
+    .ghost-btn,
+    .filter-btn,
+    .action-btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background:var(--pill-bg);
+      color:var(--navy);
+      border-radius:999px;
+      padding:11px 15px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:none;
+    }
+
+    .tiny-btn,
+    .chip-btn{
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      padding:9px 12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .ghost-btn:hover,
+    .ghost-btn:focus-visible,
+    .filter-btn:hover,
+    .filter-btn:focus-visible,
+    .action-btn:hover,
+    .action-btn:focus-visible,
+    .tiny-btn:hover,
+    .tiny-btn:focus-visible,
+    .chip-btn:hover,
+    .chip-btn:focus-visible{
+      outline:none;
+      transform:translateY(-1px);
+    }
+
+    .filter-btn.is-active,
+    .action-btn.is-active{
+      background:var(--navy-grad);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 12px 24px rgba(23,50,70,.20);
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-radius:46px;
+      padding:28px;
+      background:
+        var(--hero-overlay),
+        linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.06));
+      border:1px solid rgba(255,255,255,.86);
+      box-shadow:var(--shadow);
+      margin-bottom:22px;
+    }
+
+    .theme-night .hero{
+      border-color:rgba(255,255,255,.10);
+    }
+
+    .hero::before,
+    .hero::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      pointer-events:none;
+      filter:blur(10px);
+    }
+
+    .hero::before{
+      width:280px;
+      height:280px;
+      right:-70px;
+      top:-70px;
+      background:radial-gradient(circle, color-mix(in srgb, var(--sea) 18%, transparent), transparent 70%);
+    }
+
+    .hero::after{
+      width:280px;
+      height:280px;
+      left:-80px;
+      bottom:-90px;
+      background:radial-gradient(circle, color-mix(in srgb, var(--coral) 16%, transparent), transparent 70%);
+    }
+
+    .hero-grid{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:22px;
+      align-items:start;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      width:max-content;
+      padding:9px 14px;
+      border-radius:999px;
+      background:var(--pill-bg);
+      border:1px solid var(--line);
+      color:var(--sea);
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-size:.8rem;
+      font-weight:900;
+      margin-bottom:16px;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--gold);
+      flex:0 0 auto;
+    }
+
+    .brand-lockup{
+      display:flex;
+      align-items:flex-start;
+      gap:18px;
+      margin-bottom:18px;
+    }
+
+    .crest{
+      width:88px;
+      height:108px;
+      border-radius:26px 26px 38px 38px;
+      background:
+        radial-gradient(circle at 30% 24%, rgba(255,255,255,.24), transparent 30%),
+        var(--accent-grad);
+      color:#fff;
+      display:grid;
+      place-items:center;
+      box-shadow:0 18px 34px color-mix(in srgb, var(--gold) 22%, transparent);
+      position:relative;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+
+    .crest::before{
+      content:"";
+      position:absolute;
+      inset:8px;
+      border:1px solid rgba(255,255,255,.26);
+      border-radius:20px 20px 30px 30px;
+    }
+
+    .crest span{
+      position:relative;
+      z-index:1;
+      font-family:var(--serif);
+      font-size:1.95rem;
+      font-weight:700;
+      letter-spacing:-.05em;
+    }
+
+    .brand-name{
+      font-family:var(--serif);
+      font-size:1.2rem;
+      color:var(--ink);
+      margin-bottom:4px;
+      letter-spacing:-.02em;
+    }
+
+    .brand-sub{
+      color:var(--muted);
+      font-size:.92rem;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    h1{
+      font-family:var(--serif);
+      font-size:clamp(3rem, 6.5vw, 6.6rem);
+      line-height:.9;
+      letter-spacing:-.06em;
+      color:var(--ink);
+      max-width:8ch;
+      margin-bottom:12px;
+      text-wrap:balance;
+    }
+
+    .title-accent{
+      display:block;
+      color:var(--coral);
+      font-style:italic;
+      font-weight:700;
+    }
+
+    .tagline{
+      font-size:clamp(1rem, 2vw, 1.2rem);
+      color:var(--sea);
+      font-weight:800;
+      margin-bottom:12px;
+    }
+
+    .hero-copy{
+      color:var(--muted);
+      line-height:1.85;
+      max-width:64ch;
+      margin-bottom:18px;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:20px;
+    }
+
+    .hero-stats{
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .stat-card{
+      border-radius:22px;
+      padding:15px;
+      background:var(--soft-card);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .stat-card span{
+      display:block;
+      color:var(--sea);
+      font-size:.74rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+
+    .stat-card strong{
+      display:block;
+      color:var(--ink);
+      font-size:1.02rem;
+      letter-spacing:-.02em;
+    }
+
+    .right-stack{
+      display:grid;
+      gap:16px;
+    }
+
+    .ops-panel{
+      position:relative;
+      overflow:hidden;
+      border-radius:30px;
+      padding:22px;
+      color:#fff;
+      background:var(--dark-panel);
+      box-shadow:var(--shadow);
+    }
+
+    .ops-panel::before{
+      content:"";
+      position:absolute;
+      inset:auto -36px -44px auto;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:radial-gradient(circle, color-mix(in srgb, var(--gold-2) 34%, transparent), transparent 70%);
+      pointer-events:none;
+    }
+
+    .ops-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .ops-kicker{
+      color:rgba(255,255,255,.68);
+      font-size:.74rem;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    .ops-panel h2{
+      font-family:var(--serif);
+      font-size:clamp(1.8rem, 3vw, 2.7rem);
+      line-height:1;
+      letter-spacing:-.04em;
+      max-width:12ch;
+    }
+
+    .ops-badge{
+      width:74px;
+      height:74px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.18);
+      color:var(--gold-2);
+      font-size:.78rem;
+      letter-spacing:.18em;
+      font-weight:900;
+      box-shadow:inset 0 0 0 8px rgba(255,255,255,.03);
+    }
+
+    .ops-copy{
+      color:rgba(255,255,255,.82);
+      line-height:1.8;
+      margin-bottom:14px;
+      max-width:45ch;
+    }
+
+    .xp-wrap{display:grid;gap:10px}
+    .xp-row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:.92rem;
+      font-weight:800;
+      color:#fff;
+    }
+
+    .xp-bar{
+      width:100%;
+      height:12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+    }
+
+    .xp-fill{
+      width:0%;
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg, var(--gold), var(--coral));
+      transition:width .35s ease;
+    }
+
+    .sub-card{
+      border-radius:24px;
+      padding:18px;
+      background:var(--soft-card);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .sub-card h3{
+      font-family:var(--serif);
+      font-size:1.18rem;
+      color:var(--ink);
+      margin-bottom:12px;
+      letter-spacing:-.03em;
+    }
+
+    .mini-list,
+    .mission-list,
+    .boss-log{
+      list-style:none;
+      padding:0;
+      display:grid;
+      gap:10px;
+    }
+
+    .mini-list li,
+    .mission-list li,
+    .boss-log li{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:var(--card);
+    }
+
+    .mini-list span,
+    .mission-list span,
+    .boss-log span{color:var(--muted)}
+    .mini-list strong,
+    .mission-list strong,
+    .boss-log strong{color:var(--ink)}
+
+    .main-grid{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:22px;
+    }
+
+    .panel{
+      border-radius:32px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,249,241,.96));
+      border:1px solid rgba(255,255,255,.88);
+      box-shadow:var(--shadow);
+    }
+
+    .theme-night .panel{
+      border-color:rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+    }
+
+    .panel.dark{
+      background:var(--dark-panel);
+      color:#fff;
+    }
+
+    .panel-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:14px;
+      flex-wrap:wrap;
+      padding:22px 22px 0;
+    }
+
+    .panel-head h2{
+      font-family:var(--serif);
+      font-size:clamp(1.55rem, 3vw, 2.2rem);
+      color:var(--ink);
+      letter-spacing:-.04em;
+    }
+
+    .panel-head p{
+      color:var(--muted);
+      line-height:1.72;
+      max-width:58ch;
+    }
+
+    .dark .panel-head h2{color:#fff}
+    .dark .panel-head p{color:rgba(255,255,255,.72)}
+
+    .menu-grid{
+      padding:22px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .menu-card{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-height:290px;
+      padding:18px;
+      border-radius:24px;
+      background:linear-gradient(180deg, #fffdf8, #fff5e9);
+      border:1px solid var(--line);
+      box-shadow:0 8px 24px rgba(22,33,45,.05);
+      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      overflow:hidden;
+    }
+
+    .theme-night .menu-card{
+      background:rgba(255,255,255,.05);
+    }
+
+    .menu-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 18px 34px rgba(22,33,45,.1);
+      border-color:color-mix(in srgb, var(--gold) 34%, transparent);
+    }
+
+    .menu-card::before{
+      content:"";
+      position:absolute;
+      inset:auto -36px -36px auto;
+      width:110px;
+      height:110px;
+      border-radius:50%;
+      background:radial-gradient(circle, color-mix(in srgb, var(--sea) 14%, transparent), transparent 68%);
+      pointer-events:none;
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+
+    .menu-card h3{
+      font-family:var(--serif);
+      font-size:1.22rem;
+      color:var(--ink);
+      letter-spacing:-.03em;
+    }
+
+    .price{
+      min-width:64px;
+      padding:10px 12px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--accent-grad);
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 10px 22px rgba(255,130,83,.22);
+      flex:0 0 auto;
+    }
+
+    .recommended{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      border-radius:999px;
+      padding:8px 12px;
+      background:var(--recommended-bg);
+      border:1px solid var(--recommended-line);
+      color:var(--coral);
+      font-size:.78rem;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .recommended::before{content:"✦"}
+
+    .menu-card p{
+      color:var(--muted);
+      line-height:1.8;
+      font-size:.96rem;
+    }
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:auto;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--ink);
+      font-size:.8rem;
+      font-weight:800;
+    }
+
+    .theme-night .chip{
+      background:rgba(255,255,255,.06);
+    }
+
+    .chip::before{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--sea);
+      flex:0 0 auto;
+    }
+
+    .card-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:2px;
+    }
+
+    .tiny-btn{
+      background:rgba(23,50,70,.08);
+      color:var(--navy);
+    }
+
+    .tiny-btn.primary{
+      background:var(--sea-grad);
+      color:#fff;
+    }
+
+    .tiny-btn.favorite.is-favorite{
+      background:linear-gradient(135deg, var(--coral), #ff9e74);
+      color:#fff;
+    }
+
+    .side-stack{
+      padding:22px;
+      display:grid;
+      gap:16px;
+    }
+
+    .side-card{
+      border-radius:22px;
+      padding:18px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .side-card h3{
+      font-family:var(--serif);
+      font-size:1.18rem;
+      color:#fff;
+      margin-bottom:10px;
+      letter-spacing:-.03em;
+    }
+
+    .side-card p{
+      color:rgba(255,255,255,.72);
+      line-height:1.75;
+      margin-bottom:12px;
+    }
+
+    .list-clean{
+      list-style:none;
+      padding:0;
+      display:grid;
+      gap:10px;
+    }
+
+    .list-clean li{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:11px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1);
+      color:#fff;
+      line-height:1.5;
+    }
+
+    .item-label{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
+    .item-label::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--gold);
+      flex:0 0 auto;
+      box-shadow:0 0 0 6px rgba(200,160,99,.08);
+    }
+
+    .combo-box,
+    .boss-box,
+    .challenge-box{
+      display:grid;
+      gap:12px;
+    }
+
+    .combo-row,
+    .boss-row,
+    .challenge-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      color:#fff;
+      font-weight:800;
+    }
+
+    .boss-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--gold-2);
+      font-size:.8rem;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .queue-panel{
+      margin-top:22px;
+      border-radius:32px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,249,241,.96));
+      border:1px solid rgba(255,255,255,.88);
+      box-shadow:var(--shadow);
+    }
+
+    .theme-night .queue-panel{
+      background:rgba(255,255,255,.03);
+      border-color:rgba(255,255,255,.08);
+    }
+
+    .queue-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:14px;
+      flex-wrap:wrap;
+      padding:22px 22px 0;
+    }
+
+    .queue-head h2{
+      font-family:var(--serif);
+      font-size:clamp(1.45rem, 3vw, 2.1rem);
+      color:var(--ink);
+      letter-spacing:-.04em;
+    }
+
+    .queue-head p{
+      color:var(--muted);
+      line-height:1.72;
+      max-width:60ch;
+    }
+
+    .queue-tools{
+      padding:16px 22px 0;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .queue-grid{
+      padding:22px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .order-card{
+      border-radius:22px;
+      padding:18px;
+      background:linear-gradient(180deg, #fffdf8, #fff5e9);
+      border:1px solid var(--line);
+      box-shadow:0 8px 24px rgba(22,33,45,.05);
+      display:grid;
+      gap:12px;
+    }
+
+    .theme-night .order-card{
+      background:rgba(255,255,255,.05);
+    }
+
+    .order-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+
+    .order-top h3{
+      font-family:var(--serif);
+      font-size:1.16rem;
+      color:var(--ink);
+      letter-spacing:-.03em;
+    }
+
+    .persona{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--ink);
+      font-size:.8rem;
+      font-weight:800;
+    }
+
+    .theme-night .persona{
+      background:rgba(255,255,255,.06);
+    }
+
+    .urgency{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:max-content;
+      padding:8px 11px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:900;
+      letter-spacing:.06em;
+      color:#fff;
+    }
+
+    .urgency.low{background:var(--sea-grad)}
+    .urgency.medium{background:linear-gradient(135deg, var(--warning), #efb050)}
+    .urgency.high{background:linear-gradient(135deg, var(--danger), #ff8e8e)}
+    .urgency.boss{background:linear-gradient(135deg, var(--violet), #a78bfa)}
+
+    .order-meta{
+      display:grid;
+      gap:8px;
+      color:var(--muted);
+      line-height:1.65;
+      font-size:.95rem;
+    }
+
+    .order-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:2px;
+    }
+
+    .chip-btn{
+      background:rgba(23,50,70,.08);
+      color:var(--navy);
+    }
+
+    .chip-btn.primary{
+      background:var(--navy-grad);
+      color:#fff;
+    }
+
+    .rush-banner{
+      margin-top:22px;
+      border-radius:30px;
+      padding:20px;
+      background:var(--navy-grad);
+      color:#fff;
+      box-shadow:var(--shadow);
+      display:grid;
+      gap:14px;
+    }
+
+    .rush-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .rush-top h2{
+      font-family:var(--serif);
+      font-size:clamp(1.4rem, 2vw, 2rem);
+      letter-spacing:-.04em;
+    }
+
+    .rush-top p{
+      color:rgba(255,255,255,.76);
+      line-height:1.7;
+      max-width:60ch;
+    }
+
+    .rush-stats{
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .rush-card{
+      border-radius:18px;
+      padding:14px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.1);
+    }
+
+    .rush-card span{
+      display:block;
+      color:rgba(255,255,255,.68);
+      font-size:.74rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+
+    .rush-card strong{
+      display:block;
+      color:#fff;
+      font-size:1rem;
+    }
+
+    .note{
+      margin-top:22px;
+      border-radius:30px;
+      padding:24px;
+      background:linear-gradient(135deg, rgba(255,255,255,.76), rgba(255,249,240,.95));
+      border:1px solid rgba(255,255,255,.86);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .theme-night .note{
+      background:rgba(255,255,255,.03);
+      border-color:rgba(255,255,255,.08);
+    }
+
+    .note h2{
+      font-family:var(--serif);
+      font-size:clamp(1.45rem, 2vw, 2rem);
+      color:var(--ink);
+      letter-spacing:-.04em;
+      margin-bottom:10px;
+    }
+
+    .note p{
+      color:var(--muted);
+      line-height:1.85;
+      max-width:78ch;
+      margin-bottom:12px;
+    }
+
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:.92rem;
+      padding:18px 4px 0;
+    }
+
+    .hidden{display:none !important}
+
+    .toast{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:100;
+      min-width:240px;
+      max-width:340px;
+      padding:14px 16px;
+      border-radius:18px;
+      color:#fff;
+      background:var(--navy-grad);
+      box-shadow:0 20px 50px rgba(12,22,30,.28);
+      transform:translateY(18px);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease, transform .25s ease;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    @media (max-width: 1140px){
+      .hero-grid,
+      .main-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 920px){
+      .menu-grid,
+      .queue-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero-stats,
+      .rush-stats{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 640px){
+      .page{
+        width:min(calc(100% - 14px), var(--max));
+        margin:12px auto 32px;
+      }
+
+      .hero{
+        padding:18px;
+        border-radius:28px;
+      }
+
+      .menu-grid,
+      .queue-grid,
+      .side-stack,
+      .queue-tools,
+      .panel-head,
+      .queue-head,
+      .note{
+        padding-left:16px;
+        padding-right:16px;
+      }
+
+      .hero-stats,
+      .rush-stats{
+        grid-template-columns:1fr;
+      }
+
+      .mini-list li,
+      .mission-list li,
+      .combo-row,
+      .boss-row,
+      .challenge-row,
+      .order-top,
+      .rush-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .ghost-btn,
+      .filter-btn,
+      .action-btn{
+        width:100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{
+        animation:none !important;
+        transition:none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="page">
+    <div class="topbar">
+      <div class="group">
+        <div class="glass-pill">
+          <span class="brand-dot" aria-hidden="true"></span>
+          <span data-i18n="top.challenge">May 2026 CodePen Challenge · Surfin Bird Quest</span>
+        </div>
+        <div class="glass-pill">
+          <span class="mini-dot" aria-hidden="true"></span>
+          <span data-i18n="top.inspired">Inspired by Laura Andreea's favorite challenge directions</span>
+        </div>
+      </div>
+
+      <div class="group">
+        <button class="ghost-btn" id="langBtn" type="button">RO</button>
+        <button class="ghost-btn" id="themeBtn" type="button" aria-pressed="false" data-i18n="btn.theme">Toggle night mode</button>
+        <button class="ghost-btn" id="resetBtn" type="button" data-i18n="btn.reset">Reset progress</button>
+      </div>
+    </div>
+
+    <header class="hero">
+      <div class="hero-grid">
+        <section>
+          <div class="eyebrow" data-i18n="hero.eyebrow">Gamified Coastal House</div>
+
+          <div class="brand-lockup">
+            <div class="crest" aria-hidden="true"><span>SB</span></div>
+            <div>
+              <div class="brand-name">Surfin Bird Sandwiches</div>
+              <div class="brand-sub" data-i18n="hero.sub">Premium menu · Ops dashboard · Arcade quest</div>
+            </div>
+          </div>
+
+          <h1>
+            <span data-i18n="hero.titleMain">Surfin Bird</span>
+            <span class="title-accent" data-i18n="hero.titleAccent">Quest</span>
+          </h1>
+
+          <p class="tagline" data-i18n="hero.tagline">A restaurant menu transformed into a premium playable experience.</p>
+
+          <p class="hero-copy" data-i18n="hero.copy">
+            This version combines your luxury editorial directions with arcade-ops logic: menu cards, combo building, mission board, rush waves, boss orders, badges, favorites, queue handling, and bilingual UX in one polished challenge entry.
+          </p>
+
+          <div class="hero-actions" aria-label="Filters">
+            <button class="filter-btn is-active" type="button" data-filter="all" aria-pressed="true" data-i18n="filter.all">Show all</button>
+            <button class="filter-btn" type="button" data-filter="sandwiches" aria-pressed="false" data-i18n="filter.sandwiches">Sandwiches</button>
+            <button class="filter-btn" type="button" data-filter="sides" aria-pressed="false" data-i18n="filter.sides">Sides</button>
+            <button class="filter-btn" type="button" data-filter="beverages" aria-pressed="false" data-i18n="filter.beverages">Beverages</button>
+            <button class="filter-btn" type="button" data-filter="ops" aria-pressed="false" data-i18n="filter.ops">Ops panels</button>
+          </div>
+
+          <div class="hero-stats">
+            <article class="stat-card">
+              <span data-i18n="stat.level">Level</span>
+              <strong id="levelValue">1 · Rookie Operator</strong>
+            </article>
+            <article class="stat-card">
+              <span data-i18n="stat.xp">XP</span>
+              <strong id="xpValue">0 / 1000</strong>
+            </article>
+            <article class="stat-card">
+              <span data-i18n="stat.score">Score</span>
+              <strong id="scoreValue">0 pts</strong>
+            </article>
+            <article class="stat-card">
+              <span data-i18n="stat.streak">Streak</span>
+              <strong id="streakValue">0</strong>
+            </article>
+            <article class="stat-card">
+              <span data-i18n="stat.orders">Orders done</span>
+              <strong id="ordersDoneValue">0</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="right-stack">
+          <article class="ops-panel menu-section" data-section="ops">
+            <div class="ops-head">
+              <div>
+                <div class="ops-kicker" data-i18n="ops.kicker">Live Quest Board</div>
+                <h2 data-i18n="ops.title">Build combos. Clear queues. Beat the boss order.</h2>
+              </div>
+              <div class="ops-badge" aria-hidden="true">OPS</div>
+            </div>
+
+            <p class="ops-copy" data-i18n="ops.copy">
+              Explore menu items like a player journey. Combine premium food cards with lightweight systems: missions, order matching, urgency handling, and leaderboard-style progression.
+            </p>
+
+            <div class="xp-wrap">
+              <div class="xp-row">
+                <span data-i18n="ops.progress">Progress</span>
+                <span id="xpPercent">0%</span>
+              </div>
+              <div class="xp-bar" aria-hidden="true">
+                <div class="xp-fill" id="xpFill"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="sub-card menu-section" data-section="ops">
+            <h3 data-i18n="mission.title">Mission Board</h3>
+            <ul class="mission-list" id="missionList">
+              <li data-mission="sandwich"><span data-i18n="mission.sandwich">Choose 1 sandwich</span><strong>+90 XP</strong></li>
+              <li data-mission="side"><span data-i18n="mission.side">Add 1 side</span><strong>+50 XP</strong></li>
+              <li data-mission="drink"><span data-i18n="mission.drink">Add 1 beverage</span><strong>+50 XP</strong></li>
+              <li data-mission="favorite"><span data-i18n="mission.favorite">Save 2 favorites</span><strong>+70 XP</strong></li>
+              <li data-mission="combo"><span data-i18n="mission.combo">Complete a combo</span><strong>+100 XP</strong></li>
+              <li data-mission="queue"><span data-i18n="mission.queue">Clear 1 queued order</span><strong>+120 XP</strong></li>
+              <li data-mission="boss"><span data-i18n="mission.boss">Beat 1 boss order</span><strong>+180 XP</strong></li>
+            </ul>
+          </article>
+
+          <article class="sub-card menu-section" data-section="ops">
+            <h3 data-i18n="hours.title">Hours</h3>
+            <ul class="mini-list">
+              <li><span data-i18n="hours.monThu">Monday - Thursday</span><strong>11 a.m. - 5 p.m.</strong></li>
+              <li><span data-i18n="hours.friday">Friday</span><strong>11 a.m. - 6 p.m.</strong></li>
+              <li><span data-i18n="hours.saturday">Saturday</span><strong>11 a.m. - 6 p.m.</strong></li>
+              <li><span data-i18n="hours.sunday">Sunday</span><strong>11 a.m. - 2 p.m.</strong></li>
+            </ul>
+          </article>
+        </section>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="main-grid">
+        <section class="panel menu-section" data-section="sandwiches">
+          <div class="panel-head">
+            <div>
+              <h2 data-i18n="menu.title">Signature Sandwiches</h2>
+              <p data-i18n="menu.copy">
+                A premium editorial presentation, but each card also works as a playable unit for combos, missions, and queued customer requests.
+              </p>
+            </div>
+          </div>
+
+          <div class="menu-grid">
+            <article class="menu-card item-card" data-type="sandwich" data-name="The Surfin Bird" data-price="12">
+              <div class="card-top">
+                <h3>The Surfin Bird</h3>
+                <span class="price">$12</span>
+              </div>
+              <div class="recommended" data-i18n="badge.recommended">Chef Recommended</div>
+              <p data-i18n="item.surfinBird">
+                Our signature classic. Sliced chicken breast, avocado mayo, tomato, lettuce, and Surfin Bird sauce on toasted bread or a potato bun.
+              </p>
+              <div class="meta">
+                <span class="chip" data-i18n="chip.signature">Signature</span>
+                <span class="chip" data-i18n="chip.fresh">Fresh & creamy</span>
+              </div>
+              <div class="card-actions">
+                <button class="tiny-btn primary add-btn" type="button" data-i18n="btn.addCombo">Add to combo</button>
+                <button class="tiny-btn favorite favorite-btn" type="button" aria-pressed="false" data-i18n="btn.favorite">Favorite</button>
+              </div>
+            </article>
+
+            <article class="menu-card item-card" data-type="sandwich" data-name="The Jolly Roger" data-price="12">
+              <div class="card-top">
+                <h3>The Jolly Roger</h3>
+                <span class="price">$12</span>
+              </div>
+              <p data-i18n="item.jollyRoger">
+                A pirate BLT with smoked Applewood bacon, Duke's mayo, heirloom tomatoes, and treasure spice blend on sourdough.
+              </p>
+              <div class="meta">
+                <span class="chip" data-i18n="chip.smoky">Smoky</span>
+                <span class="chip" data-i18n="chip.bold">Bold sourdough</span>
+              </div>
+              <div class="card-actions">
+                <button class="tiny-btn primary add-btn" type="button" data-i18n="btn.addCombo">Add to combo</button>
+                <button class="tiny-btn favorite favorite-btn" type="button" aria-pressed="false" data-i18n="btn.favorite">Favorite</button>
+              </div>
+            </article>
+
+            <article class="menu-card item-card" data-type="sandwich" data-name="The Beach Bum" data-price="14">
+              <div class="card-top">
+                <h3>The Beach Bum</h3>
+                <span class="price">$14</span>
+              </div>
+              <p data-i18n="item.beachBum">
+                A triple decker stacked with turkey, bacon, lettuce, tomato, and pepper jack cheese. Built for bigger appetites.
+              </p>
+              <div class="meta">
+                <span class="chip" data-i18n="chip.triple">Triple decker</span>
+                <span class="chip" data-i18n="chip.hearty">Hearty favorite</span>
+              </div>
+              <div class="card-actions">
+                <button class="tiny-btn primary add-btn" type="button" data-i18n="btn.addCombo">Add to combo</button>
+                <button class="tiny-btn favorite favorite-btn" type="button" aria-pressed="false" data-i18n="btn.favorite">Favorite</button>
+              </div>
+            </article>
+
+            <article class="menu-card item-card" data-type="sandwich" data-name="The Shady Palm" data-price="14">
+              <div class="card-top">
+                <h3>The Shady Palm</h3>
+                <span class="price">$14</span>
+              </div>
+              <p data-i18n="item.shadyPalm">
+                The vegan pick: a panfried hearts-of-palm and garbanzo patty with lettuce, heirloom tomato, and horseradish vegan mayo.
+              </p>
+              <div class="meta">
+                <span class="chip" data-i18n="chip.vegan">Vegan</span>
+                <span class="chip" data-i18n="chip.spice">Coastal spice</span>
+              </div>
+              <div class="card-actions">
+                <button class="tiny-btn primary add-btn" type="button" data-i18n="btn.addCombo">Add to combo</button>
+                <button class="tiny-btn favorite favorite-btn" type="button" aria-pressed="false" data-i18n="btn.favorite">Favorite</button>
+              </div>
+            </article>
+
+            <article class="menu-card item-card" data-type="sandwich" data-name="The Sandcastle" data-price="8">
+              <div class="card-top">
+                <h3>The Sandcastle</h3>
+                <span class="price">$8</span>
+              </div>
+              <p data-i18n="item.sandcastle">
+                Peanut butter or sunflower seed butter with strawberry or blueberry jelly. Crust removal available for tiny adventurers.
+              </p>
+              <div class="meta">
+                <span class="chip" data-i18n="chip.kid">Kid-friendly</span>
+                <span class="chip" data-i18n="chip.classic">Comfort classic</span>
+              </div>
+              <div class="card-actions">
+                <button class="tiny-btn primary add-btn" type="button" data-i18n="btn.addCombo">Add to combo</button>
+                <button class="tiny-btn favorite favorite-btn" type="button" aria-pressed="false" data-i18n="btn.favorite">Favorite</button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <aside class="panel dark">
+          <div class="side-stack">
+            <section class="side-card menu-section" data-section="sides">
+              <h3 data-i18n="side.title">Sides</h3>
+              <p data-i18n="side.copy">Pick a support item for your combo or queued order.</p>
+              <ul class="list-clean">
+                <li class="item-row" data-type="side" data-name="Housemade Kettle Cooked Potato Chips" data-price="0">
+                  <span class="item-label"><span data-i18n="side.chips">Housemade Kettle Cooked Potato Chips</span></span>
+                  <button class="tiny-btn primary add-btn-inline" type="button" data-i18n="btn.pick">Pick</button>
+                </li>
+                <li class="item-row" data-type="side" data-name="French Fries" data-price="0">
+                  <span class="item-label"><span data-i18n="side.fries">French Fries</span></span>
+                  <button class="tiny-btn primary add-btn-inline" type="button" data-i18n="btn.pick">Pick</button>
+                </li>
+                <li class="item-row" data-type="side" data-name="Cole Slaw" data-price="0">
+                  <span class="item-label"><span data-i18n="side.slaw">Cole Slaw</span></span>
+                  <button class="tiny-btn primary add-btn-inline" type="button" data-i18n="btn.pick">Pick</button>
+                </li>
+                <li class="item-row" data-type="side" data-name="Potato Salad" data-price="0">
+                  <span class="item-label"><span data-i18n="side.potatoSalad">Potato Salad</span></span>
+                  <button class="tiny-btn primary add-btn-inline" type="button" data-i18n="btn.pick">Pick</button>
+                </li>
+                <li class="item-row" data-type="side" data-name="Mixed Greens Salad" data-price="0">
+                  <span class="item-label"><span data-i18n="side.greens">Mixed Greens Salad</span></span>
+                  <button class="tiny-btn primary add-btn-inline" type="button" data-i18n="btn.pick">Pick</button>
+                </li>
+              </ul>
+            </section>
+
+            <section class="side-card menu-section" data-section="beverages">
+              <h3 data-i18n="drink.title">Beverages</h3>
+              <p data-i18n="drink.copy">Choose the final boost for your combo.</p>
+              <ul class="list-clean">
+                <li class="item-row" data-type="drink" data-name="Iced Tea" data-price="3">
+                  <span class="item-label"><span data-i18n="drink.tea">Iced Tea</span></span>
+                  <button class="tiny-btn primary add-btn-inline" type="button" data-i18n="btn.pick">Pick</button>
+                </li>
+                <li class="item-row" data-type="drink" data-name="Cola" data-price="3">
+                  <span class="item-label"><span data-i18n="drink.cola">Cola</span></span>
+                  <button class="tiny-btn primary add-btn-inline" type="button" data-i18n="btn.pick">Pick</button>
+                </li>
+                <li class="item-row" data-type="drink" data-name="Sparkling Water" data-price="3">
+                  <span class="item-label"><span data-i18n="drink.water">Sparkling Water</span></span>
+                  <button class="tiny-btn primary add-btn-inline" type="button" data-i18n="btn.pick">Pick</button>
+                </li>
+              </ul>
+            </section>
+
+            <section class="side-card menu-section" data-section="ops">
+              <h3 data-i18n="combo.title">Combo Builder</h3>
+              <p data-i18n="combo.copy">Use your current build for combo XP, queue dispatching, and boss battles.</p>
+              <div class="combo-box">
+                <div class="combo-row"><span data-i18n="combo.sandwich">Sandwich</span><strong id="comboSandwich">Not selected</strong></div>
+                <div class="combo-row"><span data-i18n="combo.side">Side</span><strong id="comboSide">Not selected</strong></div>
+                <div class="combo-row"><span data-i18n="combo.drink">Drink</span><strong id="comboDrink">Not selected</strong></div>
+                <div class="combo-row"><span data-i18n="combo.total">Total</span><strong id="comboTotal">$0</strong></div>
+                <button class="action-btn" id="completeComboBtn" type="button" data-i18n="btn.claimCombo">Claim combo XP</button>
+              </div>
+            </section>
+
+            <section class="side-card menu-section" data-section="ops">
+              <h3 data-i18n="boss.title">Boss Order</h3>
+              <p data-i18n="boss.copy">A rarer, higher-value order with stricter matching. Beat it to unlock a stronger reward.</p>
+              <div class="boss-box">
+                <div class="boss-tag" id="bossStatusTag" data-i18n="boss.idle">Idle</div>
+                <div class="boss-row"><span data-i18n="boss.target">Target build</span><strong id="bossTarget">—</strong></div>
+                <div class="boss-row"><span data-i18n="boss.timer">Time left</span><strong id="bossTimer">—</strong></div>
+                <div class="boss-row"><span data-i18n="boss.reward">Reward</span><strong id="bossReward">+220 XP</strong></div>
+                <button class="action-btn" id="spawnBossBtn" type="button" data-i18n="btn.spawnBoss">Spawn boss order</button>
+              </div>
+            </section>
+
+            <section class="side-card menu-section" data-section="ops">
+              <h3 data-i18n="badge.title">Badges</h3>
+              <p data-i18n="badge.copy">Unlock titles through exploration, speed, queue accuracy, and boss wins.</p>
+              <ul class="mini-list">
+                <li><span data-i18n="badge.rookie">Rookie Operator</span><strong>Level 1</strong></li>
+                <li><span data-i18n="badge.tamer">Queue Tamer</span><strong>Level 2</strong></li>
+                <li><span data-i18n="badge.master">Rush Master</span><strong>Level 3</strong></li>
+                <li><span data-i18n="badge.legend">Boss Breaker</span><strong>Boss Win</strong></li>
+              </ul>
+            </section>
+          </div>
+        </aside>
+      </div>
+
+      <section class="rush-banner menu-section" data-section="ops">
+        <div class="rush-top">
+          <div>
+            <h2 data-i18n="rush.title">Service Rush Mode</h2>
+            <p data-i18n="rush.copy">
+              Spawn guest orders, sort them by urgency, and dispatch the correct combo. Urgent orders score more, but incorrect deliveries break your streak.
+            </p>
+          </div>
+          <div class="group">
+            <button class="action-btn" id="spawnOrdersBtn" type="button" data-i18n="btn.spawn">Spawn orders</button>
+            <button class="ghost-btn" id="rushBtn" type="button" data-i18n="btn.rush">Start rush wave</button>
+          </div>
+        </div>
+
+        <div class="rush-stats">
+          <article class="rush-card">
+            <span data-i18n="rush.activeOrders">Active orders</span>
+            <strong id="activeOrdersValue">0</strong>
+          </article>
+          <article class="rush-card">
+            <span data-i18n="rush.urgentOrders">Urgent orders</span>
+            <strong id="urgentOrdersValue">0</strong>
+          </article>
+          <article class="rush-card">
+            <span data-i18n="rush.bestStreak">Best streak</span>
+            <strong id="bestStreakValue">0</strong>
+          </article>
+          <article class="rush-card">
+            <span data-i18n="rush.rushStatus">Rush status</span>
+            <strong id="rushStatusValue">Idle</strong>
+          </article>
+          <article class="rush-card">
+            <span data-i18n="rush.favorites">Favorites</span>
+            <strong id="favoritesCountValue">0</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="queue-panel menu-section" data-section="ops">
+        <div class="queue-head">
+          <div>
+            <h2 data-i18n="queue.title">Customer Queue</h2>
+            <p data-i18n="queue.copy">
+              Each card acts like a mini task. Match your current combo to the requested build and dispatch it for points, XP, and streak progression.
+            </p>
+          </div>
+        </div>
+
+        <div class="queue-tools">
+          <button class="ghost-btn" id="sortUrgencyBtn" type="button" data-i18n="btn.sortUrgency">Sort by urgency</button>
+          <button class="ghost-btn" id="sortPersonaBtn" type="button" data-i18n="btn.sortPersona">Sort by persona</button>
+          <button class="ghost-btn" id="sortRewardBtn" type="button" data-i18n="btn.sortReward">Sort by reward</button>
+        </div>
+
+        <div class="queue-grid" id="queueGrid"></div>
+      </section>
+
+      <section class="note">
+        <h2 data-i18n="note.title">What this combined version keeps from all directions</h2>
+        <p data-i18n="note.p1">
+          It keeps the premium hospitality feel, the stronger typography, the hero storytelling, the editorial menu rhythm, and the luxury card styling — but now everything also serves product logic.
+        </p>
+        <p data-i18n="note.p2">
+          It also keeps the more gamified challenge DNA: XP, favorites, missions, combo systems, rush waves, queue sorting, boss orders, and state persistence, so it feels much closer to your CRM + arcade + UX style.
+        </p>
+        <p data-i18n="note.p3">
+          It is portfolio-ready for CodePen or GitHub Pages as a single-file premium challenge entry.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Surfin Bird Quest · Premium gamified menu inspired by your strongest challenge directions
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const i18n = {
+      en: {
+        "top.challenge":"May 2026 CodePen Challenge · Surfin Bird Quest",
+        "top.inspired":"Inspired by Laura Andreea's favorite challenge directions",
+        "btn.theme":"Toggle night mode",
+        "btn.reset":"Reset progress",
+        "hero.eyebrow":"Gamified Coastal House",
+        "hero.sub":"Premium menu · Ops dashboard · Arcade quest",
+        "hero.titleMain":"Surfin Bird",
+        "hero.titleAccent":"Quest",
+        "hero.tagline":"A restaurant menu transformed into a premium playable experience.",
+        "hero.copy":"This version combines your luxury editorial directions with arcade-ops logic: menu cards, combo building, mission board, rush waves, boss orders, badges, favorites, queue handling, and bilingual UX in one polished challenge entry.",
+        "filter.all":"Show all",
+        "filter.sandwiches":"Sandwiches",
+        "filter.sides":"Sides",
+        "filter.beverages":"Beverages",
+        "filter.ops":"Ops panels",
+        "stat.level":"Level",
+        "stat.xp":"XP",
+        "stat.score":"Score",
+        "stat.streak":"Streak",
+        "stat.orders":"Orders done",
+        "ops.kicker":"Live Quest Board",
+        "ops.title":"Build combos. Clear queues. Beat the boss order.",
+        "ops.copy":"Explore menu items like a player journey. Combine premium food cards with lightweight systems: missions, order matching, urgency handling, and leaderboard-style progression.",
+        "ops.progress":"Progress",
+        "mission.title":"Mission Board",
+        "mission.sandwich":"Choose 1 sandwich",
+        "mission.side":"Add 1 side",
+        "mission.drink":"Add 1 beverage",
+        "mission.favorite":"Save 2 favorites",
+        "mission.combo":"Complete a combo",
+        "mission.queue":"Clear 1 queued order",
+        "mission.boss":"Beat 1 boss order",
+        "hours.title":"Hours",
+        "hours.monThu":"Monday - Thursday",
+        "hours.friday":"Friday",
+        "hours.saturday":"Saturday",
+        "hours.sunday":"Sunday",
+        "menu.title":"Signature Sandwiches",
+        "menu.copy":"A premium editorial presentation, but each card also works as a playable unit for combos, missions, and queued customer requests.",
+        "item.surfinBird":"Our signature classic. Sliced chicken breast, avocado mayo, tomato, lettuce, and Surfin Bird sauce on toasted bread or a potato bun.",
+        "item.jollyRoger":"A pirate BLT with smoked Applewood bacon, Duke's mayo, heirloom tomatoes, and treasure spice blend on sourdough.",
+        "item.beachBum":"A triple decker stacked with turkey, bacon, lettuce, tomato, and pepper jack cheese. Built for bigger appetites.",
+        "item.shadyPalm":"The vegan pick: a panfried hearts-of-palm and garbanzo patty with lettuce, heirloom tomato, and horseradish vegan mayo.",
+        "item.sandcastle":"Peanut butter or sunflower seed butter with strawberry or blueberry jelly. Crust removal available for tiny adventurers.",
+        "chip.signature":"Signature",
+        "chip.fresh":"Fresh & creamy",
+        "chip.smoky":"Smoky",
+        "chip.bold":"Bold sourdough",
+        "chip.triple":"Triple decker",
+        "chip.hearty":"Hearty favorite",
+        "chip.vegan":"Vegan",
+        "chip.spice":"Coastal spice",
+        "chip.kid":"Kid-friendly",
+        "chip.classic":"Comfort classic",
+        "badge.recommended":"Chef Recommended",
+        "btn.addCombo":"Add to combo",
+        "btn.favorite":"Favorite",
+        "btn.favorited":"Favorited",
+        "btn.pick":"Pick",
+        "side.title":"Sides",
+        "side.copy":"Pick a support item for your combo or queued order.",
+        "side.chips":"Housemade Kettle Cooked Potato Chips",
+        "side.fries":"French Fries",
+        "side.slaw":"Cole Slaw",
+        "side.potatoSalad":"Potato Salad",
+        "side.greens":"Mixed Greens Salad",
+        "drink.title":"Beverages",
+        "drink.copy":"Choose the final boost for your combo.",
+        "drink.tea":"Iced Tea",
+        "drink.cola":"Cola",
+        "drink.water":"Sparkling Water",
+        "combo.title":"Combo Builder",
+        "combo.copy":"Use your current build for combo XP, queue dispatching, and boss battles.",
+        "combo.sandwich":"Sandwich",
+        "combo.side":"Side",
+        "combo.drink":"Drink",
+        "combo.total":"Total",
+        "btn.claimCombo":"Claim combo XP",
+        "boss.title":"Boss Order",
+        "boss.copy":"A rarer, higher-value order with stricter matching. Beat it to unlock a stronger reward.",
+        "boss.target":"Target build",
+        "boss.timer":"Time left",
+        "boss.reward":"Reward",
+        "boss.idle":"Idle",
+        "boss.active":"Boss live",
+        "btn.spawnBoss":"Spawn boss order",
+        "badge.title":"Badges",
+        "badge.copy":"Unlock titles through exploration, speed, queue accuracy, and boss wins.",
+        "badge.rookie":"Rookie Operator",
+        "badge.tamer":"Queue Tamer",
+        "badge.master":"Rush Master",
+        "badge.legend":"Boss Breaker",
+        "rush.title":"Service Rush Mode",
+        "rush.copy":"Spawn guest orders, sort them by urgency, and dispatch the correct combo. Urgent orders score more, but incorrect deliveries break your streak.",
+        "btn.spawn":"Spawn orders",
+        "btn.rush":"Start rush wave",
+        "rush.activeOrders":"Active orders",
+        "rush.urgentOrders":"Urgent orders",
+        "rush.bestStreak":"Best streak",
+        "rush.rushStatus":"Rush status",
+        "rush.favorites":"Favorites",
+        "queue.title":"Customer Queue",
+        "queue.copy":"Each card acts like a mini task. Match your current combo to the requested build and dispatch it for points, XP, and streak progression.",
+        "btn.sortUrgency":"Sort by urgency",
+        "btn.sortPersona":"Sort by persona",
+        "btn.sortReward":"Sort by reward",
+        "queue.guest":"Guest",
+        "queue.request":"Requested build",
+        "queue.points":"Points",
+        "queue.dispatch":"Dispatch combo",
+        "queue.remove":"Remove",
+        "queue.emptyTitle":"Queue is empty",
+        "queue.emptyCopy":"Spawn new orders or start a rush wave to turn the menu into a live dashboard experience.",
+        "note.title":"What this combined version keeps from all directions",
+        "note.p1":"It keeps the premium hospitality feel, the stronger typography, the hero storytelling, the editorial menu rhythm, and the luxury card styling — but now everything also serves product logic.",
+        "note.p2":"It also keeps the more gamified challenge DNA: XP, favorites, missions, combo systems, rush waves, queue sorting, boss orders, and state persistence, so it feels much closer to your CRM + arcade + UX style.",
+        "note.p3":"It is portfolio-ready for CodePen or GitHub Pages as a single-file premium challenge entry.",
+        "state.notSelected":"Not selected",
+        "state.idle":"Idle",
+        "state.live":"Live",
+        "toast.comboAdded":"added to combo",
+        "toast.favoriteAdded":"saved as favorite",
+        "toast.favoriteRemoved":"removed from favorites",
+        "toast.comboNeed":"Select a sandwich, side, and drink first",
+        "toast.comboClaimed":"Combo reward already claimed",
+        "toast.progressReset":"Progress reset",
+        "toast.queueSpawned":"New orders added",
+        "toast.orderCleared":"Order cleared",
+        "toast.orderWrong":"Current combo does not match the request",
+        "toast.rushStarted":"Rush wave started",
+        "toast.levelUnlocked":"Unlocked",
+        "toast.bossSpawned":"Boss order spawned",
+        "toast.bossCleared":"Boss order defeated",
+        "toast.bossWrong":"Boss request not matched",
+        "toast.bossExpired":"Boss order expired",
+        "level.1":"Rookie Operator",
+        "level.2":"Queue Tamer",
+        "level.3":"Rush Master",
+        "level.4":"Boss Breaker"
+      },
+      ro: {
+        "top.challenge":"CodePen Challenge Mai 2026 · Surfin Bird Quest",
+        "top.inspired":"Inspirat din cele mai apreciate direcții de challenge ale Laurei Andreea",
+        "btn.theme":"Comută modul de noapte",
+        "btn.reset":"Resetează progresul",
+        "hero.eyebrow":"Coastal House Gamificat",
+        "hero.sub":"Meniu premium · Dashboard ops · Quest arcade",
+        "hero.titleMain":"Surfin Bird",
+        "hero.titleAccent":"Quest",
+        "hero.tagline":"Un meniu de restaurant transformat într-o experiență premium jucabilă.",
+        "hero.copy":"Această versiune combină direcțiile tale luxury editoriale cu logică arcade-ops: carduri de meniu, combo builder, mission board, rush waves, boss orders, badge-uri, favorite, queue handling și UX bilingv într-un singur entry polished.",
+        "filter.all":"Arată tot",
+        "filter.sandwiches":"Sandwich-uri",
+        "filter.sides":"Garnituri",
+        "filter.beverages":"Băuturi",
+        "filter.ops":"Panouri ops",
+        "stat.level":"Nivel",
+        "stat.xp":"XP",
+        "stat.score":"Scor",
+        "stat.streak":"Streak",
+        "stat.orders":"Comenzi făcute",
+        "ops.kicker":"Quest Board Live",
+        "ops.title":"Construiește combo-uri. Golește cozi. Învinge boss order-ul.",
+        "ops.copy":"Explorează item-urile din meniu ca pe un parcurs de jucător. Combină cardurile premium cu sisteme ușoare: misiuni, order matching, urgență și progresie de tip leaderboard.",
+        "ops.progress":"Progres",
+        "mission.title":"Panou de misiuni",
+        "mission.sandwich":"Alege 1 sandwich",
+        "mission.side":"Adaugă 1 garnitură",
+        "mission.drink":"Adaugă 1 băutură",
+        "mission.favorite":"Salvează 2 favorite",
+        "mission.combo":"Completează un combo",
+        "mission.queue":"Rezolvă 1 comandă din coadă",
+        "mission.boss":"Învinge 1 boss order",
+        "hours.title":"Program",
+        "hours.monThu":"Luni - Joi",
+        "hours.friday":"Vineri",
+        "hours.saturday":"Sâmbătă",
+        "hours.sunday":"Duminică",
+        "menu.title":"Sandwich-uri Signature",
+        "menu.copy":"O prezentare premium editorială, dar fiecare card funcționează și ca unitate jucabilă pentru combo-uri, misiuni și cereri din coadă.",
+        "item.surfinBird":"Clasicul casei. Piept de pui feliat, avocado mayo, roșie, salată și sos Surfin Bird pe pâine prăjită sau potato bun.",
+        "item.jollyRoger":"Un BLT de pirat, cu bacon afumat Applewood, Duke's mayo, roșii heirloom și treasure spice blend pe sourdough.",
+        "item.beachBum":"Un triple decker cu curcan, bacon, salată, roșie și pepper jack, pentru poftă mare.",
+        "item.shadyPalm":"Opțiunea vegană: chiftea din hearts of palm și năut, cu salată, roșie heirloom și horseradish vegan mayo.",
+        "item.sandcastle":"Unt de arahide sau unt din semințe de floarea-soarelui cu jeleu de căpșuni sau afine. Putem scoate și coaja.",
+        "chip.signature":"Signature",
+        "chip.fresh":"Fresh & creamy",
+        "chip.smoky":"Smoky",
+        "chip.bold":"Bold sourdough",
+        "chip.triple":"Triple decker",
+        "chip.hearty":"Hearty favorite",
+        "chip.vegan":"Vegan",
+        "chip.spice":"Coastal spice",
+        "chip.kid":"Kid-friendly",
+        "chip.classic":"Comfort classic",
+        "badge.recommended":"Recomandarea Chef-ului",
+        "btn.addCombo":"Adaugă în combo",
+        "btn.favorite":"Favorit",
+        "btn.favorited":"Favorit salvat",
+        "btn.pick":"Alege",
+        "side.title":"Garnituri",
+        "side.copy":"Alege un item de suport pentru combo sau pentru o comandă din coadă.",
+        "side.chips":"Chipsuri kettle făcute în casă",
+        "side.fries":"Cartofi prăjiți",
+        "side.slaw":"Cole Slaw",
+        "side.potatoSalad":"Salată de cartofi",
+        "side.greens":"Salată verde mixtă",
+        "drink.title":"Băuturi",
+        "drink.copy":"Alege boost-ul final pentru combo.",
+        "drink.tea":"Ceai rece",
+        "drink.cola":"Cola",
+        "drink.water":"Apă minerală",
+        "combo.title":"Combo Builder",
+        "combo.copy":"Folosește build-ul curent pentru XP, pentru coadă și pentru boss battles.",
+        "combo.sandwich":"Sandwich",
+        "combo.side":"Garnitură",
+        "combo.drink":"Băutură",
+        "combo.total":"Total",
+        "btn.claimCombo":"Revendică XP combo",
+        "boss.title":"Boss Order",
+        "boss.copy":"O comandă mai rară, cu valoare mai mare și matching mai strict. Dacă o bați, primești o recompensă mai puternică.",
+        "boss.target":"Build țintă",
+        "boss.timer":"Timp rămas",
+        "boss.reward":"Recompensă",
+        "boss.idle":"Idle",
+        "boss.active":"Boss activ",
+        "btn.spawnBoss":"Generează boss order",
+        "badge.title":"Badge-uri",
+        "badge.copy":"Deblochează titluri prin explorare, viteză, acuratețe în coadă și victorii de boss.",
+        "badge.rookie":"Rookie Operator",
+        "badge.tamer":"Queue Tamer",
+        "badge.master":"Rush Master",
+        "badge.legend":"Boss Breaker",
+        "rush.title":"Service Rush Mode",
+        "rush.copy":"Generează comenzi, sortează-le după urgență și livrează combo-ul corect. Comenzile urgente aduc mai multe puncte, dar greșelile îți rup streak-ul.",
+        "btn.spawn":"Generează comenzi",
+        "btn.rush":"Pornește rush wave",
+        "rush.activeOrders":"Comenzi active",
+        "rush.urgentOrders":"Comenzi urgente",
+        "rush.bestStreak":"Cel mai bun streak",
+        "rush.rushStatus":"Status rush",
+        "rush.favorites":"Favorite",
+        "queue.title":"Coada clienților",
+        "queue.copy":"Fiecare card funcționează ca o mini sarcină. Potrivește combo-ul curent cu build-ul cerut și livrează-l pentru puncte, XP și progres.",
+        "btn.sortUrgency":"Sortează după urgență",
+        "btn.sortPersona":"Sortează după persona",
+        "btn.sortReward":"Sortează după recompensă",
+        "queue.guest":"Client",
+        "queue.request":"Build cerut",
+        "queue.points":"Puncte",
+        "queue.dispatch":"Livrează combo",
+        "queue.remove":"Elimină",
+        "queue.emptyTitle":"Coada este goală",
+        "queue.emptyCopy":"Generează comenzi noi sau pornește un rush wave ca să transformi meniul într-o experiență live de dashboard.",
+        "note.title":"Ce păstrează această versiune combinată din toate direcțiile",
+        "note.p1":"Păstrează sentimentul premium hospitality, tipografia mai puternică, storytelling-ul din hero, ritmul editorial și card styling-ul luxury — dar acum totul servește și logică de produs.",
+        "note.p2":"Păstrează și ADN-ul mai gamificat de challenge: XP, favorite, misiuni, combo systems, rush waves, queue sorting, boss orders și state persistence, astfel încât să fie mult mai aproape de stilul tău CRM + arcade + UX.",
+        "note.p3":"Este gata de portofoliu pentru CodePen sau GitHub Pages ca single-file premium challenge entry.",
+        "state.notSelected":"Neselectat",
+        "state.idle":"Idle",
+        "state.live":"Live",
+        "toast.comboAdded":"adăugat în combo",
+        "toast.favoriteAdded":"salvat la favorite",
+        "toast.favoriteRemoved":"eliminat din favorite",
+        "toast.comboNeed":"Selectează întâi un sandwich, o garnitură și o băutură",
+        "toast.comboClaimed":"Recompensa combo a fost deja revendicată",
+        "toast.progressReset":"Progres resetat",
+        "toast.queueSpawned":"Comenzi noi adăugate",
+        "toast.orderCleared":"Comandă rezolvată",
+        "toast.orderWrong":"Combo-ul curent nu corespunde cererii",
+        "toast.rushStarted":"Rush wave pornit",
+        "toast.levelUnlocked":"Deblocat",
+        "toast.bossSpawned":"Boss order generat",
+        "toast.bossCleared":"Boss order învins",
+        "toast.bossWrong":"Cererea boss-ului nu este potrivită",
+        "toast.bossExpired":"Boss order expirat",
+        "level.1":"Rookie Operator",
+        "level.2":"Queue Tamer",
+        "level.3":"Rush Master",
+        "level.4":"Boss Breaker"
+      }
+    };
+
+    const STORAGE_KEY = "surfin-bird-quest-premium-v1";
+
+    const personas = [
+      "Tourist Couple",
+      "Busy Local",
+      "Family Table",
+      "Beach Athlete",
+      "Remote Worker",
+      "Vegan Explorer",
+      "Office Pickup",
+      "Late Lunch Team"
+    ];
+
+    const sandwiches = ["The Surfin Bird","The Jolly Roger","The Beach Bum","The Shady Palm","The Sandcastle"];
+    const sides = ["Housemade Kettle Cooked Potato Chips","French Fries","Cole Slaw","Potato Salad","Mixed Greens Salad"];
+    const drinks = ["Iced Tea","Cola","Sparkling Water"];
+
+    const LEVELS = [
+      { min: 0, key: "level.1" },
+      { min: 220, key: "level.2" },
+      { min: 520, key: "level.3" },
+      { min: 860, key: "level.4" }
+    ];
+
+    const defaultState = {
+      lang: "en",
+      night: false,
+      xp: 0,
+      score: 0,
+      streak: 0,
+      bestStreak: 0,
+      ordersDone: 0,
+      favorites: [],
+      comboClaimed: false,
+      rushLive: false,
+      combo: {
+        sandwich: null,
+        side: null,
+        drink: null
+      },
+      missions: {
+        sandwich: false,
+        side: false,
+        drink: false,
+        favorite: false,
+        combo: false,
+        queue: false,
+        boss: false
+      },
+      queue: [],
+      boss: null
+    };
+
+    let state = loadState();
+    let bossTimer = null;
+
+    const root = document.documentElement;
+    const langBtn = document.getElementById("langBtn");
+    const themeBtn = document.getElementById("themeBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const completeComboBtn = document.getElementById("completeComboBtn");
+    const spawnOrdersBtn = document.getElementById("spawnOrdersBtn");
+    const rushBtn = document.getElementById("rushBtn");
+    const spawnBossBtn = document.getElementById("spawnBossBtn");
+    const sortUrgencyBtn = document.getElementById("sortUrgencyBtn");
+    const sortPersonaBtn = document.getElementById("sortPersonaBtn");
+    const sortRewardBtn = document.getElementById("sortRewardBtn");
+    const toast = document.getElementById("toast");
+
+    const filterButtons = [...document.querySelectorAll(".filter-btn")];
+    const sections = [...document.querySelectorAll(".menu-section")];
+    const addButtons = [...document.querySelectorAll(".add-btn")];
+    const addInlineButtons = [...document.querySelectorAll(".add-btn-inline")];
+    const favoriteButtons = [...document.querySelectorAll(".favorite-btn")];
+    const missionList = document.getElementById("missionList");
+    const queueGrid = document.getElementById("queueGrid");
+
+    const levelValue = document.getElementById("levelValue");
+    const xpValue = document.getElementById("xpValue");
+    const xpPercent = document.getElementById("xpPercent");
+    const xpFill = document.getElementById("xpFill");
+    const scoreValue = document.getElementById("scoreValue");
+    const streakValue = document.getElementById("streakValue");
+    const ordersDoneValue = document.getElementById("ordersDoneValue");
+    const comboSandwich = document.getElementById("comboSandwich");
+    const comboSide = document.getElementById("comboSide");
+    const comboDrink = document.getElementById("comboDrink");
+    const comboTotal = document.getElementById("comboTotal");
+    const activeOrdersValue = document.getElementById("activeOrdersValue");
+    const urgentOrdersValue = document.getElementById("urgentOrdersValue");
+    const bestStreakValue = document.getElementById("bestStreakValue");
+    const rushStatusValue = document.getElementById("rushStatusValue");
+    const favoritesCountValue = document.getElementById("favoritesCountValue");
+    const bossStatusTag = document.getElementById("bossStatusTag");
+    const bossTarget = document.getElementById("bossTarget");
+    const bossTimerEl = document.getElementById("bossTimer");
+
+    function loadState() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!raw) return structuredClone(defaultState);
+        return {
+          ...structuredClone(defaultState),
+          ...raw,
+          combo: { ...defaultState.combo, ...(raw.combo || {}) },
+          missions: { ...defaultState.missions, ...(raw.missions || {}) },
+          queue: Array.isArray(raw.queue) ? raw.queue : [],
+          boss: raw.boss || null
+        };
+      } catch {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function t(key) {
+      return i18n[state.lang][key] || key;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function capXp() { return 1000; }
+
+    function levelFromXp(xp) {
+      let current = LEVELS[0];
+      for (const level of LEVELS) {
+        if (xp >= level.min) current = level;
+      }
+      return current;
+    }
+
+    function grantXp(amount, reason) {
+      const oldLevel = t(levelFromXp(state.xp).key);
+      state.xp = Math.min(capXp(), state.xp + amount);
+      state.score += amount;
+      const newLevel = t(levelFromXp(state.xp).key);
+
+      if (reason) showToast(`+${amount} XP · ${reason}`);
+      if (oldLevel !== newLevel) {
+        setTimeout(() => showToast(`${t("toast.levelUnlocked")}: ${newLevel}`), 220);
+      }
+
+      saveState();
+      render();
+    }
+
+    function setTheme(night) {
+      state.night = night;
+      root.classList.toggle("theme-night", night);
+      themeBtn.setAttribute("aria-pressed", night ? "true" : "false");
+      themeBtn.textContent = state.lang === "ro"
+        ? (night ? "Comută modul de zi" : "Comută modul de noapte")
+        : (night ? "Switch to day mode" : "Toggle night mode");
+      saveState();
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = state.lang === "ro" ? "ro" : "en";
+      langBtn.textContent = state.lang === "en" ? "RO" : "EN";
+      document.querySelectorAll("[data-i18n]").forEach(node => {
+        node.textContent = t(node.dataset.i18n);
+      });
+      render();
+    }
+
+    function missionReward(key) {
+      if (state.missions[key]) return;
+      state.missions[key] = true;
+
+      const rewards = {
+        sandwich: 90,
+        side: 50,
+        drink: 50,
+        favorite: 70,
+        combo: 100,
+        queue: 120,
+        boss: 180
+      };
+
+      const labels = {
+        sandwich: t("mission.sandwich"),
+        side: t("mission.side"),
+        drink: t("mission.drink"),
+        favorite: t("mission.favorite"),
+        combo: t("mission.combo"),
+        queue: t("mission.queue"),
+        boss: t("mission.boss")
+      };
+
+      grantXp(rewards[key], labels[key]);
+    }
+
+    function setFilter(filter) {
+      sections.forEach(section => {
+        const show = filter === "all" || section.dataset.section === filter;
+        section.classList.toggle("hidden", !show);
+      });
+
+      filterButtons.forEach(button => {
+        const active = button.dataset.filter === filter;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    function comboTotalValue() {
+      return (state.combo.sandwich?.price || 0) + (state.combo.side?.price || 0) + (state.combo.drink?.price || 0);
+    }
+
+    function updateCombo(type, name, price) {
+      state.combo[type] = { name, price: Number(price || 0) };
+      if (type === "sandwich") missionReward("sandwich");
+      if (type === "side") missionReward("side");
+      if (type === "drink") missionReward("drink");
+      state.comboClaimed = false;
+      saveState();
+      render();
+      showToast(`${name} ${t("toast.comboAdded")}`);
+    }
+
+    function isComboComplete() {
+      return !!state.combo.sandwich && !!state.combo.side && !!state.combo.drink;
+    }
+
+    function toggleFavorite(name) {
+      const exists = state.favorites.includes(name);
+      if (exists) {
+        state.favorites = state.favorites.filter(item => item !== name);
+        showToast(`${name} ${t("toast.favoriteRemoved")}`);
+      } else {
+        state.favorites.push(name);
+        showToast(`${name} ${t("toast.favoriteAdded")}`);
+      }
+      if (state.favorites.length >= 2) {
+        missionReward("favorite");
+      } else {
+        saveState();
+        render();
+      }
+    }
+
+    function claimCombo() {
+      if (!isComboComplete()) {
+        showToast(t("toast.comboNeed"));
+        return;
+      }
+      if (state.comboClaimed || state.missions.combo) {
+        showToast(t("toast.comboClaimed"));
+        return;
+      }
+      state.comboClaimed = true;
+      state.streak += 1;
+      state.bestStreak = Math.max(state.bestStreak, state.streak);
+      missionReward("combo");
+      saveState();
+      render();
+    }
+
+    function randomItem(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function urgencyWeight(label) {
+      return label === "boss" ? 4 : label === "high" ? 3 : label === "medium" ? 2 : 1;
+    }
+
+    function randomUrgency() {
+      const roll = Math.random();
+      if (roll > 0.74) return "high";
+      if (roll > 0.38) return "medium";
+      return "low";
+    }
+
+    function createOrder() {
+      const urgency = randomUrgency();
+      const sandwich = randomItem(sandwiches);
+      const side = randomItem(sides);
+      const drink = randomItem(drinks);
+      return {
+        id: Math.random().toString(36).slice(2, 10),
+        persona: randomItem(personas),
+        urgency,
+        sandwich,
+        side,
+        drink,
+        points: urgency === "high" ? 160 : urgency === "medium" ? 120 : 85,
+        isBoss: false
+      };
+    }
+
+    function spawnOrders(count = 3) {
+      const newOrders = Array.from({ length: count }, () => createOrder());
+      state.queue.push(...newOrders);
+      saveState();
+      render();
+      showToast(t("toast.queueSpawned"));
+    }
+
+    function spawnBossOrder() {
+      clearBossTimer();
+      const bossOrder = {
+        id: `boss-${Math.random().toString(36).slice(2, 8)}`,
+        persona: state.lang === "ro" ? "Boss Client" : "Boss Client",
+        urgency: "boss",
+        sandwich: randomItem(sandwiches),
+        side: randomItem(sides),
+        drink: randomItem(drinks),
+        points: 220,
+        isBoss: true,
+        timeLeft: 45
+      };
+      state.boss = bossOrder;
+      state.queue.unshift(bossOrder);
+      showToast(t("toast.bossSpawned"));
+      bossTimer = setInterval(() => {
+        if (!state.boss) {
+          clearBossTimer();
+          return;
+        }
+        state.boss.timeLeft -= 1;
+        const queueBoss = state.queue.find(item => item.id === state.boss.id);
+        if (queueBoss) queueBoss.timeLeft = state.boss.timeLeft;
+        if (state.boss.timeLeft <= 0) {
+          state.queue = state.queue.filter(item => item.id !== state.boss.id);
+          state.boss = null;
+          clearBossTimer();
+          saveState();
+          render();
+          showToast(t("toast.bossExpired"));
+        } else {
+          saveState();
+          renderBoss();
+          renderQueue();
+        }
+      }, 1000);
+      saveState();
+      render();
+    }
+
+    function clearBossTimer() {
+      if (bossTimer) {
+        clearInterval(bossTimer);
+        bossTimer = null;
+      }
+    }
+
+    function comboMatchesOrder(order) {
+      return (
+        state.combo.sandwich?.name === order.sandwich &&
+        state.combo.side?.name === order.side &&
+        state.combo.drink?.name === order.drink
+      );
+    }
+
+    function dispatchOrder(orderId) {
+      const order = state.queue.find(item => item.id === orderId);
+      if (!order) return;
+      if (!comboMatchesOrder(order)) {
+        state.streak = 0;
+        saveState();
+        render();
+        showToast(order.isBoss ? t("toast.bossWrong") : t("toast.orderWrong"));
+        return;
+      }
+
+      state.queue = state.queue.filter(item => item.id !== orderId);
+      state.ordersDone += 1;
+      state.streak += 1;
+      state.bestStreak = Math.max(state.bestStreak, state.streak);
+
+      if (order.isBoss) {
+        state.boss = null;
+        clearBossTimer();
+        missionReward("boss");
+        grantXp(order.points, `${order.persona}`);
+        showToast(t("toast.bossCleared"));
+      } else {
+        missionReward("queue");
+        grantXp(order.points, `${order.persona}`);
+        showToast(t("toast.orderCleared"));
+      }
+
+      saveState();
+      render();
+    }
+
+    function removeOrder(orderId) {
+      const target = state.queue.find(item => item.id === orderId);
+      if (target?.isBoss) {
+        state.boss = null;
+        clearBossTimer();
+      }
+      state.queue = state.queue.filter(item => item.id !== orderId);
+      saveState();
+      render();
+    }
+
+    function sortByUrgency() {
+      state.queue.sort((a, b) => urgencyWeight(b.urgency) - urgencyWeight(a.urgency));
+      saveState();
+      renderQueue();
+    }
+
+    function sortByPersona() {
+      state.queue.sort((a, b) => a.persona.localeCompare(b.persona));
+      saveState();
+      renderQueue();
+    }
+
+    function sortByReward() {
+      state.queue.sort((a, b) => b.points - a.points);
+      saveState();
+      renderQueue();
+    }
+
+    function startRushWave() {
+      state.rushLive = true;
+      spawnOrders(5);
+      showToast(t("toast.rushStarted"));
+      saveState();
+      render();
+    }
+
+    function renderFavorites() {
+      favoriteButtons.forEach(btn => {
+        const card = btn.closest(".item-card");
+        const name = card?.dataset.name;
+        const isFavorite = state.favorites.includes(name);
+        btn.classList.toggle("is-favorite", isFavorite);
+        btn.setAttribute("aria-pressed", isFavorite ? "true" : "false");
+        btn.textContent = isFavorite ? t("btn.favorited") : t("btn.favorite");
+      });
+      favoritesCountValue.textContent = String(state.favorites.length);
+    }
+
+    function renderProgress() {
+      const level = levelFromXp(state.xp);
+      const percent = Math.round((state.xp / capXp()) * 100);
+      levelValue.textContent = `${LEVELS.findIndex(x => x.key === level.key) + 1} · ${t(level.key)}`;
+      xpValue.textContent = `${state.xp} / ${capXp()}`;
+      xpPercent.textContent = `${percent}%`;
+      xpFill.style.width = `${percent}%`;
+      scoreValue.textContent = `${state.score} pts`;
+      streakValue.textContent = String(state.streak);
+      ordersDoneValue.textContent = String(state.ordersDone);
+      activeOrdersValue.textContent = String(state.queue.length);
+      urgentOrdersValue.textContent = String(state.queue.filter(item => item.urgency === "high" || item.urgency === "boss").length);
+      bestStreakValue.textContent = String(state.bestStreak);
+      rushStatusValue.textContent = state.rushLive ? t("state.live") : t("state.idle");
+    }
+
+    function renderCombo() {
+      comboSandwich.textContent = state.combo.sandwich?.name || t("state.notSelected");
+      comboSide.textContent = state.combo.side?.name || t("state.notSelected");
+      comboDrink.textContent = state.combo.drink?.name || t("state.notSelected");
+      comboTotal.textContent = `$${comboTotalValue()}`;
+      completeComboBtn.classList.toggle("is-active", isComboComplete() && !state.missions.combo);
+    }
+
+    function renderMissions() {
+      [...missionList.querySelectorAll("li[data-mission]")].forEach(item => {
+        const key = item.dataset.mission;
+        const done = !!state.missions[key];
+        item.style.borderColor = done ? "rgba(26,165,111,.35)" : "";
+        item.style.background = done ? "linear-gradient(135deg, rgba(26,165,111,.12), rgba(255,255,255,.9))" : "";
+        const label = item.querySelector("span");
+        if (label) {
+          label.textContent = t(label.dataset.i18n || "");
+          if (done) label.textContent += " ✓";
+        }
+      });
+    }
+
+    function renderBoss() {
+      if (!state.boss) {
+        bossStatusTag.textContent = t("boss.idle");
+        bossTarget.textContent = "—";
+        bossTimerEl.textContent = "—";
+        return;
+      }
+      bossStatusTag.textContent = t("boss.active");
+      bossTarget.textContent = `${state.boss.sandwich} + ${state.boss.side} + ${state.boss.drink}`;
+      bossTimerEl.textContent = `${state.boss.timeLeft}s`;
+    }
+
+    function renderQueue() {
+      if (!state.queue.length) {
+        queueGrid.innerHTML = `
+          <article class="order-card">
+            <div class="order-top">
+              <h3>${t("queue.emptyTitle")}</h3>
+              <span class="urgency low">CALM</span>
+            </div>
+            <div class="order-meta">
+              <p>${t("queue.emptyCopy")}</p>
+            </div>
+          </article>
+        `;
+        return;
+      }
+
+      queueGrid.innerHTML = state.queue.map(order => `
+        <article class="order-card">
+          <div class="order-top">
+            <div>
+              <h3>${order.persona}</h3>
+              <div class="persona">${t("queue.guest")}</div>
+            </div>
+            <span class="urgency ${order.urgency}">${order.urgency.toUpperCase()}</span>
+          </div>
+
+          <div class="order-meta">
+            <p><strong>${t("queue.request")}:</strong> ${order.sandwich} + ${order.side} + ${order.drink}</p>
+            <p><strong>${t("queue.points")}:</strong> ${order.points}</p>
+            ${order.isBoss ? `<p><strong>${t("boss.timer")}:</strong> ${order.timeLeft}s</p>` : ""}
+          </div>
+
+          <div class="order-actions">
+            <button class="chip-btn primary dispatch-btn" type="button" data-id="${order.id}">${t("queue.dispatch")}</button>
+            <button class="chip-btn remove-btn" type="button" data-id="${order.id}">${t("queue.remove")}</button>
+          </div>
+        </article>
+      `).join("");
+
+      queueGrid.querySelectorAll(".dispatch-btn").forEach(btn => {
+        btn.addEventListener("click", () => dispatchOrder(btn.dataset.id));
+      });
+
+      queueGrid.querySelectorAll(".remove-btn").forEach(btn => {
+        btn.addEventListener("click", () => removeOrder(btn.dataset.id));
+      });
+    }
+
+    function render() {
+      renderProgress();
+      renderFavorites();
+      renderCombo();
+      renderMissions();
+      renderBoss();
+      renderQueue();
+      setTheme(state.night);
+      saveState();
+    }
+
+    addButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".item-card");
+        updateCombo(card.dataset.type, card.dataset.name, card.dataset.price);
+      });
+    });
+
+    addInlineButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const row = btn.closest(".item-row");
+        updateCombo(row.dataset.type, row.dataset.name, row.dataset.price);
+      });
+    });
+
+    favoriteButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".item-card");
+        if (!card) return;
+        toggleFavorite(card.dataset.name);
+      });
+    });
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => setFilter(btn.dataset.filter));
+    });
+
+    completeComboBtn.addEventListener("click", claimCombo);
+    spawnOrdersBtn.addEventListener("click", () => spawnOrders(3));
+    rushBtn.addEventListener("click", startRushWave);
+    spawnBossBtn.addEventListener("click", spawnBossOrder);
+    sortUrgencyBtn.addEventListener("click", sortByUrgency);
+    sortPersonaBtn.addEventListener("click", sortByPersona);
+    sortRewardBtn.addEventListener("click", sortByReward);
+
+    themeBtn.addEventListener("click", () => setTheme(!state.night));
+
+    langBtn.addEventListener("click", () => {
+      state.lang = state.lang === "en" ? "ro" : "en";
+      saveState();
+      applyLanguage();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      clearBossTimer();
+      state = structuredClone(defaultState);
+      saveState();
+      applyLanguage();
+      setFilter("all");
+      showToast(t("toast.progressReset"));
+    });
+
+    applyLanguage();
+    setFilter("all");
+  </script>
+</body>
+</html>
