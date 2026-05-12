@@ -5,6 +5,8 @@
 ![CSS](https://img.shields.io/badge/CSS-UI%20System-1572b6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-Gameplay%20Logic-f7df1e?style=for-the-badge&logo=javascript&logoColor=111827)
 
+![Surfin Bird Quest Premium Preview](./preview-banner.svg)
+
 A premium restaurant menu reimagined as a playable arcade-style experience.
 
 **Surfin Bird Quest Premium** transforms a static hospitality layout into an interactive product concept where users build combos, complete missions, manage queue pressure, earn XP, and progress through a polished service-flow interface.
@@ -16,13 +18,13 @@ A premium restaurant menu reimagined as a playable arcade-style experience.
 
 ## 🖼️ Preview
 
-To add a social/repo banner later, you can place an image like `preview-banner.png` in the repository root and reference it here.
+The repository includes a dedicated banner preview:
 
-Example:
-
-```md
-![Surfin Bird Quest Premium Preview](./preview-banner.png)
+```text
+preview-banner.svg
 ```
+
+You can also reuse it for portfolio cards, repository presentation, or social sharing previews.
 
 ## ✨ Concept
 
@@ -84,6 +86,7 @@ This edition is positioned as the more advanced and polished product showcase.
 Surfin-bird-quest-premium/
 ├── index.html
 ├── enhanced-pro.html
+├── preview-banner.svg
 └── README.md
 ```
 
